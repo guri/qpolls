@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, Http404
 from Polls.models import Poll
 
 # Create your views here.
@@ -13,7 +13,8 @@ def index(request):
 
 
 def detail(request, poll_id):
-	return HttpResponse("Poll id : %s " % poll_id)
+	poll = get_object_or_404(Poll, pk = poll_id)
+	return render(request, 'polls/detail.html', {'poll' : poll})
 
 def results(request, poll_id):
 	return HttpResponse("Results Poll id : %s " % poll_id)
