@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, Http404
 from Polls.models import Poll
 
@@ -19,5 +19,15 @@ def detail(request, poll_id):
 def results(request, poll_id):
 	return HttpResponse("Results Poll id : %s " % poll_id)
 
+
 def vote(request, poll_id):
-	return HttpResponse("Vote Poll id : %s" % poll_id)
+	#return HttpResponse(request.POST)
+	poll = get_object_or_404(Poll, pk = poll_id)
+
+	if "choice" in request.POST.keys():
+		choice = get_object_or_404(poll.choice_set, pk = request.POST["choice"])
+
+		choice.votes += 1
+		choice.save()
+
+	return render(request, 'polls/detail.html', {'poll' : poll})
